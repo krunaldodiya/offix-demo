@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {ApolloClient, ApolloLink, HttpLink, InMemoryCache} from 'apollo-boost';
 import {setContext} from 'apollo-link-context';
-import {PusherLink} from './pusher';
 import Pusher from 'pusher-js/react-native';
-
-const httpUrlProd = 'https://graphql.pauzr.com/graphql';
+import {httpUrlProd} from '../libs/vars';
+import {PusherLink} from '../../pusher';
 
 const authLink = setContext(async (req, {headers}) => {
   const token = await AsyncStorage.getItem('token');
