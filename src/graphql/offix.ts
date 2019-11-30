@@ -6,6 +6,7 @@ import {OfflineClient} from 'offix-client';
 import Pusher from 'pusher-js/react-native';
 import {PusherLink} from '../../pusher';
 import {httpUrlProd} from '../libs/vars';
+import ReactNativeNetworkStatus from './network';
 
 const authLink = setContext(async (req, {headers}) => {
   const token = await AsyncStorage.getItem('token');
@@ -41,4 +42,10 @@ const link = ApolloLink.from([authLink, pusherLink, httpLink]);
 
 export const offixClient = new OfflineClient({
   terminatingLink: link,
+  storage: {
+    getItem: key => AsyncStorage.getItem(key),
+    setItem: (key, value) => AsyncStorage.setItem(key, JSON.stringify(value)),
+    removeItem: key => AsyncStorage.removeItem(key),
+  },
+  networkStatus: new ReactNativeNetworkStatus(),
 });
