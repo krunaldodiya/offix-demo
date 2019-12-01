@@ -2,7 +2,6 @@ import {ApolloProvider} from '@apollo/react-hooks';
 import {NavigationNativeContainer} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {OffixProvider} from 'react-offix-hooks';
 import {offixClient} from './src/graphql/offix';
 import InitialScreen from './src/screens/InitialScreen';
 
@@ -27,11 +26,9 @@ const App = () => {
 
   return (
     <NavigationNativeContainer>
-      <OffixProvider client={offixClient}>
-        <ApolloProvider client={apolloClient}>
-          <InitialScreen />
-        </ApolloProvider>
-      </OffixProvider>
+      <ApolloProvider client={apolloClient}>
+        <InitialScreen />
+      </ApolloProvider>
     </NavigationNativeContainer>
   );
 };

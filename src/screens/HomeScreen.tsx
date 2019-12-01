@@ -1,10 +1,9 @@
-import {useQuery} from '@apollo/react-hooks';
+import {useMutation, useQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React from 'react';
 import {Button, Text, View} from 'react-native';
-import {useOfflineMutation} from 'react-offix-hooks';
 import uuidv4 from 'uuid/v4';
-import {createOptimisticResponse} from 'offix-cache';
+import {createOptimisticResponse, CacheOperation} from 'offix-cache';
 
 const countries = gql`
   query Countries {
@@ -31,10 +30,11 @@ const add_message = gql`
 const HomeScreen = (props: any) => {
   const uuid = uuidv4();
 
-  const {data: countries_data} = useQuery(countries);
-  const [addMessage, {data: add_message_data}] = useOfflineMutation(
-    add_message,
-  );
+  const {data: countries_data} = useQuery(countries, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [addMessage, {data: add_message_data}] = useMutation(add_message);
 
   console.log(countries_data, 'countries_data');
   console.log(add_message_data, 'add_message_data');
@@ -45,11 +45,19 @@ const HomeScreen = (props: any) => {
         variables: {
           id: uuid,
           chatroom_id: '6adf54ac-3a19-49a6-9b6b-fb01cdafb77e',
-          text: 'hello',
+          text: 'hi',
         },
-        // optimisticResponse: createOptimisticResponse({
-        //   idField: 'id',
-        // }),
+        optimisticResponse: createOptimisticResponse({
+          mutation: add_message,
+          variables: {
+            id: uuid,
+            chatroom_id: '6adf54ac-3a19-49a6-9b6b-fb01cdafb77e',
+            text: 'hi',
+          },
+          operationType: CacheOperation.ADD,
+          returnType: 'Chat',
+          idField: 'id',
+        }),
       });
     } catch (error) {
       console.log(error);
